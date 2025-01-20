@@ -25,8 +25,8 @@
 
 <hr />
 
-<input type="text" placeholder="Title" value="@Title"/>
-<input type="text" placeholder="Message" value="@Message"/>
+<input type="text" placeholder="Title" @bind="Title" />
+<input type="text" placeholder="Message" @bind="Message"/>
 
 <h4>All Subscriptions:</h4>
 @if (AllSubscriptions?.Length > 0)

@@ -33,9 +33,10 @@ public class WebPushService(Vapid vapid)
         }
     }
     
-    public async ValueTask SendNotificationAsync(NotificationSubscription sub, string title, string message, CancellationToken token = default)
+    public async ValueTask SendNotificationAsync(NotificationSubscription sub,
+        string title, string message, CancellationToken token = default)
     {
-        using var client = new WebPushClient();
+        var client = new WebPushClient();
         var payload = JsonSerializer.Serialize(new { title, message });
         var vapidDetails = new VapidDetails(vapid.Subject, vapid.PublicKey, vapid.PrivateKey);
         await client.SendNotificationAsync(sub.ToPushSubscription, payload, vapidDetails, token);

@@ -7,7 +7,7 @@
 }());
 
 var BlazorWebPush = (function () {
-    var applicationServerKey = 'BEz9c9ncBnbyrlmlkCZME5Zp5YHYvaQ-cC1m2zGYqA3WkYAx_HLYutUtA2b25-nBANuUWAri_l8qlO1CiE4d_I4';
+    var applicationServerKey = 'BH1sIZfLRu7eeITwSafYqXRU_hyKqmfwSoj3fN7Y6rWetRgTE14wzOvg4FFOQUKOrSmn3iKUqJaNI8cqGyuvack';
 
     return {
         requestSubscription: requestSubscription,
@@ -17,7 +17,7 @@ var BlazorWebPush = (function () {
     function requestNotificationPermission() {
         return new Promise(function (res, rej) {
             Notification.requestPermission(function (result) {
-                if (result == 'granted') {
+                if (result === 'granted') {
                     res();
                 } else {
                     rej();
