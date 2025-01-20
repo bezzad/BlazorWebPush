@@ -1,6 +1,13 @@
 using BlazorWebPush.Components;
+using BlazorWebPush.Models;
+using BlazorWebPush.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// load configs from beginning
+var vapid = builder.Configuration.GetSection("Vapid").Get<Vapid>();
+builder.Services.AddSingleton(vapid);
+builder.Services.AddSingleton<WebPushService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

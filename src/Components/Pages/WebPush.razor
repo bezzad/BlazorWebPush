@@ -1,0 +1,85 @@
+﻿@page "/push"
+@rendermode InteractiveServer
+@using BlazorWebPush.Models
+@using BlazorWebPush.Services
+
+<h3>WebPush</h3>
+
+<hr />
+
+<h4>1. Generate Keypair</h4>
+<div>try <a href="https://tools.reactpwa.com/vapid">https://tools.reactpwa.com/vapid</a> or similar tools, and store the result.</div>
+
+<hr />
+
+<h4>2. Request Web Push Subscription</h4>
+<button class="btn btn-primary" @onclick="Subscribe">Request Subscription</button>
+<div>Endpoint: @Subscription.EndPoint</div>
+<div>P256dh: @Subscription.P256dh</div>
+<div>Auth: @Subscription.Auth</div>
+
+<hr />
+
+<h4>3. Send Subscription to server</h4>
+<button @onclick="AddSubscription">Send To Server</button>
+
+<hr />
+
+<input type="text" placeholder="Title" value="@Title"/>
+<input type="text" placeholder="Message" value="@Message"/>
+
+<h4>All Subscriptions:</h4>
+@if (AllSubscriptions?.Length > 0)
+{
+    @foreach (var sub in AllSubscriptions)
+    {
+        <div>Endpoint: @sub.EndPoint</div>
+        <button @onclick="@(() => PushNotification(sub))">Push Notification</button>
+        <div>--------------------------------------------</div>
+    }
+}
+else
+{
+    <div>No Subscriptions</div>
+}
+
+@code {
+    private NotificationSubscription Subscription { get; set; } = new();
+    private NotificationSubscription[] AllSubscriptions { get; set; } = [];
+    private string Title;
+    private string Message;
+    
+    [Inject] private WebPushService WebPushService { get; set; }
+    [Inject] private IJSRuntime JsRuntime { get; set; }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        FetchSubscriptions();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Subscribe()
+    {
+        Subscription = await JsRuntime.InvokeAsync<NotificationSubscription>("BlazorWebPush.requestSubscription");
+    }
+
+    private void AddSubscription()
+    {
+        if (Subscription != null)
+        {
+            WebPushService.AddSubscription(Subscription);
+            FetchSubscriptions();
+        }
+    }
+
+    private void FetchSubscriptions()
+    {
+        AllSubscriptions = WebPushService.GetSubscriptions();
+    }
+
+    private async Task PushNotification(NotificationSubscription sub)
+    {
+        await WebPushService.SendNotificationAsync(sub, Title, Message);
+    }
+}
