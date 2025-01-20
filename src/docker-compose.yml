@@ -1,0 +1,6 @@
+﻿services:
+  blazorwebpush:
+    image: blazorwebpush
+    build:
+      context: .
+      dockerfile: Dockerfile
